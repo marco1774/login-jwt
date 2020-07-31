@@ -1,0 +1,3 @@
+{
+  "mongo-string": "mongodb+srv://marco:marco@db-cluster0-g5h3x.mongodb.net/<dbname>?retryWrites=true&w=majority"
+}
