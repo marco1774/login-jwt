@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
 // import routes
 const registerRoute = require("./routes/register");
 const loginRoute = require("./routes/login");
@@ -7,6 +8,8 @@ const loginRoute = require("./routes/login");
 const mongoDB = require("./mongoose/mongoConnect");
 
 const PORT = process.env.PORT || 5000;
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 mongoDB();
 
