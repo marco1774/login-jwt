@@ -3,6 +3,8 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
 const UserRegisterSchema = require("../mongoose/model/UserSchema");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 
 module.exports = router.post(
   "/",
@@ -36,12 +38,23 @@ module.exports = router.post(
       user.password = passCrypted;
 
       // cercare se email è già presente
-      // creare  e restituire jwt
+      let checkEmail = await UserRegisterSchema.findOne({ email: email });
+      if (checkEmail) {
+        return res.status(400).json({ msg: "email is already exist" });
+      }
 
       let result = await user.save();
       console.log("route register saved", result);
+      // creare  e restituire jwt -  jwt.sign(payload, secretOrPrivateKey, [options, callback])
+      const payload = {
+        id: result.id,
+      };
 
-      res.status(200).json({ result });
+      let token = jwt.sign(payload, config.get("jwt-secret"), {
+        expiresIn: "1h",
+      });
+      console.log("token", token);
+      res.status(200).json({ token });
     } catch (error) {
       console.error(error.message);
       res.status(400).json(error.message);
